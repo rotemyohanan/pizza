@@ -1,0 +1,44 @@
+{
+  "name": "pizza",
+  "version": "1.0.0",
+  "description": "Main source code for the pizza restautrant exercise",
+  "main": "index.js",
+  "jest": {
+    "bail": true,
+    "verbose": true,
+    "testEnvironment": "jest-environment-jsdom-global"
+  },
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "jest --no-cache --verbose"
+  },
+  "preset": "latest",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Rotem Yohanan",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.0.1",
+    "debug": "^4.1.1",
+    "express": "^4.16.4",
+    "joi": "^14.3.1",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.4.3",
+    "morgan": "^1.9.1",
+    "pug": "^2.0.3",
+    "stringify-object": "^3.3.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-latest": "^6.24.1",
+    "jest": "^23.6.0",
+    "jest-environment-jsdom": "^23.4.0",
+    "jest-environment-jsdom-global": "^1.1.0",
+    "mock-req-res": "^1.0.2",
+    "sinon": "^7.2.2",
+    "supertest": "^3.4.2"
+  },
+}
