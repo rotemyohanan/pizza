@@ -13,11 +13,12 @@ class DoughChef {
     }
 
     doWork() {
+        pizza.setDoughStartTime(Date.now())
         setTimeout(()=> {
-            pizza.setDoughStartTime(Date.now())
             pizza.setStatus("DoughChef")
-            emitter.emit('Toppings', pizza) 
-            this.lock.release()
+            pizza.setDoughEndTime(Date.now())
+            emitter.emit('toppings', pizza) 
+            //this.lock.release()
         }, 7000)
     }
 
