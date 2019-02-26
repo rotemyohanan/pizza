@@ -1,6 +1,7 @@
-const Lock = require('../lock').Lock
+const Lock = require('./lock').Lock
+const pizza = require('./pizza')
 var events = require('events').EventEmitter
-var emitter = new events.EventEmitter()
+var doughChefEmitter = new events.EventEmitter()
 
 class DoughChef {
 
@@ -8,6 +9,16 @@ class DoughChef {
         this.name = name
         this.lock = new Lock()
         console.log('created new Dough chef ' + name)
+        doughChefEmitter.on('dough', this.doWork)
+    }
+
+    doWork() {
+        setTimeout(()=> {
+            pizza.setDoughStartTime(Date.now())
+            pizza.setStatus("DoughChef")
+            emitter.emit('Toppings', pizza) 
+            this.lock.release()
+        }, 7000)
     }
 
     async update(pizza) {

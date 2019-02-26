@@ -1,4 +1,4 @@
-const Pizza = require('../classes/pizza').Pizza
+const Pizza = require('../entities/pizza').Pizza
 
 function createPizzaList() {    
     const pizza1 = new Pizza("pizza 1")
@@ -9,7 +9,8 @@ function createPizzaList() {
 }
 
 function calculatePizzaOrderTime(pizza) {
-    return pizza.waitressTime[1] - pizza.doughTime[0]
+    const diffTime =  (pizza.waitressTime[1] - pizza.doughTime[0]) /1000
+    return `${diffTime} [sec]`
 }
 
 module.exports = {createPizzaList, calculatePizzaOrderTime}

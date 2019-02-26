@@ -1,4 +1,4 @@
-const Lock = require('../lock').Lock
+const Lock = require('./lock').Lock
 var events = require('events').EventEmitter
 var emitter = new events.EventEmitter()
 

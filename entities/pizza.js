@@ -44,8 +44,8 @@ function setWaitressEndTime(pizza, time) {
     pizza.waitressTime[1] = time
 }
 
-function getorderTime(pizza) {
-    return pizza.doughTime[0] - pizza.waitressTime[1]
+function getOrderTime() {
+    return this.waitressTime[1] - this.doughTime[0] 
 }
 
-module.exports = {Pizza, setDoughStartTime, setDoughEndTime, setToppingEndTime, setToppingStartTime, setOvenStartTime, setOvenEndTime, setWaitressStartTime, setWaitressEndTime, getorderTime}
+module.exports = {Pizza, setDoughStartTime, setDoughEndTime, setToppingEndTime, setToppingStartTime, setOvenStartTime, setOvenEndTime, setWaitressStartTime, setWaitressEndTime, getOrderTime}

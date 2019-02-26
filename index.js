@@ -1,3 +1,5 @@
+const express = require('express');
+const app = express();
 var events = require('events').EventEmitter
 var emitter = new events.EventEmitter()
 const DoughChef = require('./entities/doughChef').DoughChef
@@ -7,6 +9,11 @@ const Pizza = require('./entities/pizza').Pizza
 const  piz = require('./entities/pizza')
 const Waitress = require('./entities/waitress').Waitress
 const pizzaService = require('./services/pizzaService')
+const logger = require('./config/winston').logger
+
+const port = process.env.PORT || 3000
+app.listen(3000, () => console.log(`The application is listenning on port ${port}`))
+
 
 function handlePizza(pizza){
     // do something 
@@ -55,58 +62,61 @@ const pizzaArr = pizzaService.createPizzaList()
 emitter.on('dough',async function(pizza) {
     //await doughlock.acquire()    
     //doughChef1.update(pizza)
-    
-    console.log(`The pizza ${pizza.name} is in the doughchef`)
-    piz.setDoughStartTime(pizza, Date.now())
+
+    const startTime = Date.now()
+    piz.setDoughStartTime(pizza, startTime)
+    logger.debug(`The pizza ${pizza.name} is starting process by the doughchef, startTime = ${startTime}`)
     setTimeout(()=> {
-        piz.setDoughEndTime(pizza, Date.now())
+        const endTime = Date.now()
+        logger.debug(`The pizza ${pizza.name} dough was finished by the doughchef, endTime = ${endTime}`)
+        piz.setDoughEndTime(pizza, endTime)
         emitter.emit('toppings', pizza) 
-        console.log(pizza)
-    }, 2000)
-    /* console.log(`the pizza ${pizza} is in the dough chef` )//+ doughChef.name)
-    setTimeout(() => {
-        emitter.emit('toppings', pizza) 
-        doughlock.release()
-    }, 7000) */
-    
+    }, 7000)
 })
 
 emitter.on('toppings', function(pizza) {
-    
-    console.log("the pizza is in the topping chef")
-    piz.setToppingStartTime(pizza, Date.now())
+    const startTime = Date.now()
+    logger.debug(`The pizza ${pizza.name} is starting process by the topping chef, startTime = ${startTime}`)
+    piz.setToppingStartTime(pizza, startTime)
     setTimeout(() => {
-        piz.setToppingEndTime(pizza, Date.now())
+        const endTime = Date.now()
+        logger.debug(`The pizza ${pizza.name} was finished by the topping chef, endTime = ${endTime}`)
+        piz.setToppingEndTime(pizza, endTime)
         emitter.emit('oven', pizza)
-        
-    }, 2000)
+    }, 4000)
     
 })
 
 emitter.on('oven', function(pizza) {
-    //oven.update(pizza)
-    console.log("The pizza is in the oven")
-    piz.setOvenStartTime(pizza, Date.now())
+    const startTime = Date.now()
+    logger.debug(`The pizza ${pizza.name} is starting process in the oven, startTime = ${startTime}`)
+    piz.setOvenStartTime(pizza, startTime)
     setTimeout(()=> {
+        const endTime = Date.now()
+        logger.debug(`The pizza ${pizza.name} was finished its process in the oven, endTime = ${endTime}`)
         pizza.status = "OVEN"
-        piz.setOvenEndTime(pizza, Date.now())
+        piz.setOvenEndTime(pizza, endTime)
         emitter.emit('isServed', pizza) 
-        //this.lock.release()
-    }, 1000)
+    }, 10000)
 })
 
 emitter.on('isServed', function(pizza) {
-    
-    console.log("the pizza is being served")
+    const startTime = Date.now()
+    logger.debug(`The pizza ${pizza.name} is being served by the waitress, startTime = ${startTime}`)
     piz.setWaitressStartTime(pizza, Date.now())
     setTimeout(() => {
-        piz.setWaitressEndTime(pizza, Date.now())
-        console.log("The pizza is on the table of a happy customer")  
-        console.log(`Finished pizza name : ${pizza.name}, the pizza object is: ` + JSON.stringify(pizza))  
-        const orderTime = pizzaService.calculatePizzaOrderTime()
-        console.log(`============ The pizza order time is: ${orderTime} ===============`)
-    }, 1000)
+        const endTime = Date.now()
+        logger.debug(`The pizza ${pizza.name} was served by the waitress and the customer is happy, endTime = ${endTime}`)
+        pizza.status = "SERVED"
+        piz.setWaitressEndTime(pizza, endTime)
+        logger.debug(`Finished pizza name : ${pizza.name}, the pizza object is: ` + JSON.stringify(pizza))  
+        const orderTime = pizzaService.calculatePizzaOrderTime(pizza)
+        logger.debug(`========== ${pizza.name} order time is: ${orderTime} ==========`)
+    }, 5000)
     
 })
 
-emitter.emit('dough', pizzaArr[0])
+pizzaArr.forEach( (pizza)=> {
+    emitter.emit('dough', pizza)    
+})
+
