@@ -35,6 +35,9 @@ From the definitions of the exercise there should be:
 1 Oven
 2 waiters
 
+All those are created as entities under the **entities folder**.
+In the **index.js** file there is an implementation of creating each one of them.
+
 ### Deployment
 TBD
 
